@@ -10,15 +10,25 @@
 void parser()
 {
 	//(?!\\s|\\+|-|\\*|\\/|\\^)
-	typeReg = regex("return|int|;|[_]|[a-zA-Z][_a-zA-Z0-9]{0,30}*|[0-9]+\\.?[0-9]*|\\s|\\+|-|\\*|\\/|\\^|=|==|<=|>=|<|>|\\(|\\)|\\{|\\}|~|!|\\%|&&|\\&\\&|\\|\\||,");
+	typeReg = regex("return|num|ish|procedure|if|for|;|[_a-zA-Z][_a-zA-Z0-9]{0,30}*|[0-9]+\\.?[0-9]*|\\s|\\+|\\+\\+|\\+-|\\+=|--|-|\\*|\\/|\\/\\/|\\^|=|==|<=|>=|<|>|\\(|\\)|\\{|\\}|~|!|\\%|&&|\\&\\&|\\|\\||,");
 	//numReg = regex("(?=\\s|\\+|-|\\*|\\/|\\^)?([0-9]+\\.?[0-9]*)(?=\\s|\\+|-|\\*|\\/|\\^)");
-	vector<string> typeArr = {"return", "int", ";", "+", "-", "*", "/", " ", "^", "(", ")", "{", "}", "~", "!", "&&", "||", "<", ">", "<=", ">=", "==", "=", ",", "_"};
+	vector<string> typeArr = {";", "+", "-", "*", "/", " ", "^", "(", ")", "{", "}", "~", "!", "&&", "||", "<", ">", "<=", ">=", "==", "=", ",", "_"};
+	vector<string> typeIlgl = {"+-", "--"};
+	vector<string> typeKeys = {"ish", "return", "num", "procedure", "for", "if"};
 	// map<int, Token> tokenList;
 	// std::map<int, Token>::iterator look;
 
 	for (const auto& s : typeArr)
 	{
 		typeDict.insert(s);
+	}
+	for (const auto& s : typeIlgl)
+	{
+		ilglDict.insert(s);
+	}
+	for (const auto& s : typeKeys)
+	{
+		keysDict.insert(s);
 	}
 }
 void getTokens(string line)
@@ -29,6 +39,7 @@ void getTokens(string line)
 	auto typeEnd = sregex_iterator();
 	map<int, vector<string>> temp;
 	string type;
+	int t = 0;
 	string val;
 	int j = 0;
 	vector<string> prev = {"~", "~"}; 
@@ -40,30 +51,76 @@ void getTokens(string line)
 		//string t = i->str();
 		
 		val = match.str();
-		
+
 		if (typeDict.find(match.str()) != typeDict.end()) 
 		{
 			type = match.str();
 		} 
+		else if (ilglDict.find(match.str()) != ilglDict.end())
+		{
+			type = "Illegal";
+		}
+		else if (keysDict.find(match.str()) != keysDict.end())
+		{
+			type = "Key Word";
+			if (val == "num")
+			{
+				t = 1;
+			}
+			else if (val == "ish")
+			{
+				t = 2;
+			}
+			else if (val == "procedure")
+			{
+				t = 3;
+			}
+		}
 		else 
 		{
 			char *c = new char[val.size() +1];
 			strcpy(c, val.c_str());
 			
-			if (isdigit(c[0]) == 0){type = "name";}
-			else {type = "num";}
+			type = "dig";
+			if (isdigit(c[0]) == 0)
+			{
+				type = "name";
+				if (t == 1)
+				{
+					if (numNames.find(val) == numNames.end())
+					{
+						numNames.insert(numNames.end(), val);
+					}
+				}
+				else if (t == 2)
+				{
+					if (ishNames.find(val) == ishNames.end())
+					{
+						ishNames.insert(ishNames.end(), val);
+					}
+				}
+				else if (t == 3)
+				{
+					if (procNames.find(val) == procNames.end())
+					{
+						procNames.insert(procNames.end(), val);
+					}
+				}
+				t = 0;
+			}
+			
 			// type = "var";
 		}
 
 		if (val == "-")
 		{
-			if (prev[1] == "-")
-			{
-				temp.insert(temp.end(), {j-1, {"-", prev[1]}});
-				type = "neg";
-			}
+			// if (prev[1] == "-")
+			// {
+			// 	temp.insert(temp.end(), {j-1, {"-", prev[1]}});
+			// 	type = "neg";
+			// }
 			int findName = prev[0].find("name");
-			int findNum = prev[0].find("num");
+			int findNum = prev[0].find("dig");
 			if (findName != -1 || findNum != -1 || prev[1] == ")")
 			{
 				temp.insert(temp.end(), {j, {type, val}});
@@ -74,28 +131,27 @@ void getTokens(string line)
 			}
 			else if (prev[1] == " ")
 			{
-				val = prev[1] + val;
-				type = "neg";
+				type = "spaceneg";
 			}
 			
 		}
 		else if (prev[0] == "neg")
 		{
-			if (type == "num" || type == "name")
+			if (type == "dig" || type == "name")
 			{
 				val = prev[1] + val;
 				type = prev[0] + type;
 
-				if (prev[1].substr(0,1) == " ")
-				{
-					type = "space" + type;
-				}
+				// if (prev[1].substr(0,1) == " ")
+				// {
+				// 	type = "space" + type;
+				// }
 				
 				temp.insert(temp.end(), {j, {type, val}});
 			}
 			else if (val == " ")
 			{
-				temp.insert(temp.end(), {j-1, {prev[1], prev[1]}});
+				temp.insert(temp.end(), {j-1, {"-", "-"}});
 				//temp.insert(temp.end(), {j, {type, val}});
 			}
 			else 
@@ -105,50 +161,59 @@ void getTokens(string line)
 			}
 
 		}
+		else if (prev[0] == "spaceneg")
+		{
+			if (type == "dig" || type == "name")
+			{
+				val = prev[1] + val;
+				type = prev[0] + type;
+
+				temp.insert(temp.end(), {j, {type, val}});
+			}
+			else if (val == " ")
+			{
+				temp.insert(temp.end(), {j-1, {"-", "-"}});
+			}
+			else 
+			{
+				temp.insert(temp.end(), {j-1, {"-", "-"}});
+				temp.insert(temp.end(), {j, {type, val}});
+			}
+		}
+			
 		else if (val == " ")
 		{
 
 		}
 		else if (prev[1] == " ")
 		{
-			val = prev[1] + val;
+			//val = prev[1] + val;
 			temp.insert(temp.end(), {j, {type, val}});
+		}
+		else if (val == "//")
+		{
+			break;
 		}
 		else
 		{
 			temp.insert(temp.end(), {j, {type, val}});
 		}
 		// tokenList.insert(tokenList.end(), {match.position(), {match.str()}});
+
+		//{"ish", "return", "num", "procedure", "for", "if"}
 		
+
+
 		j++;
 		prev = {type, val};
 	}
 	tokenList = temp;
-	//tokenList.insert(tokenList.end(), {0, {"null", "null"}});
 	
-	// vector<string> cur;
-	// prev = {"~", "~"};
-	
-	// for (auto &it : temp)
-	// {
-	// 	// map<int, vector<string>>::iterator it2 = &it;
-	// 	// std::advance(it2, 1);
-	// 	// next = it2.second;
-	// 	cur = it.second;
-
-	// 	if (cur[0].find("neg") != -1 && prev[1] == " ")
-	// 	{
-	// 		cur[0] = "space" + cur[0];
-	// 	}
-
-	// 	tokenList.insert(tokenList.end(), {it.first, cur});
-		
-	// 	prev = cur;
-	// }
 	
 	look = tokenList.begin();
     // return tokenList;
 }
+
 vector<string> nextWord()
 {
 	vector<string> s;
@@ -163,4 +228,9 @@ vector<string> nextWord()
 	}
 
     return s;  
+}
+
+map<int, vector<string>> getTokenList()
+{
+	return tokenList;
 }

@@ -15,7 +15,8 @@ using namespace std;
 
 map<int, vector<string>> createProduction();
 void createProductionTbl();
-void createProductionTbl(map<int, vector<string>> myProds);
+// map<vector<string>, int> createProductionTbl(map<int, vector<string>> myProds)
+string createProductionTbl(map<int, vector<string>> myProds);
 int getProduction(string focus, vector<string> word);
 
 FILE *pro;
@@ -25,5 +26,5 @@ map<vector<string>, int> prodTbl;
 map<string, set<string>> firstElem;
 map<string, set<string>> followElem;
 map<tuple<string, string>, set<string>> firstPlus;
-set<string> terms;
-set<string> nonTerms;
+vector<string> terms;
+vector<string> nonTerms;

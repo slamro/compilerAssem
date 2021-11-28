@@ -23,11 +23,17 @@ regex numReg;
 // map<int, Token> tokenList;
 map<int, vector<string>> tokenList;
 unordered_set<string> typeDict;
+unordered_set<string> ilglDict;
+unordered_set<string> keysDict;
+unordered_set<string> numNames;
+unordered_set<string> ishNames;
+unordered_set<string> procNames;
 std::map<int, vector<string>>::iterator look;
 
 void parser();
 void getTokens(string line);
 vector<string> nextWord();
+map<int, vector<string>> getTokenList();
 
 // typeReg = regex("return|int|;|+|-|*|/|^|\\(|\\)|\\{|\\}|[_a-zA-Z][_a-zA-Z0-9]{0,30}*|~|!|&&|,");
 // numReg = regex("[0-9]+");

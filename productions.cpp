@@ -3,42 +3,95 @@
 
 map<int, vector<string>> createProduction()
 {
+    // Books productions
     // productions[0] = {"Goal", "Expr"};
     // productions[1] = {"Expr", "Term", "Expr`"};
     // productions[2] = {"Expr`", "+", "Term", "Expr`"};
     // productions[3] = {"Expr`", "-", "Term", "Expr`"};
-    // productions[4] = {"Expr`", "£"};
+    // productions[4] = {"Expr`", "ϵ"};
     // productions[5] = {"Term", "Factor", "Term`"};
     // productions[6] = {"Term`", "*", "Factor", "Term`"};
     // productions[7] = {"Term`", "/", "Factor", "Term`"};
-    // productions[8] = {"Term`", "£"};
+    // productions[8] = {"Term`", "ϵ"};
     // productions[9] = {"Factor", "(", "Expr", ")"};
     // productions[10] = {"Factor", "num"};
     // productions[11] = {"Factor", "name"};
 
-    productions[0] = {"Goal", "Expr"};
-    productions[1] = {"Expr", "LTerm", "Expr`"};
-    productions[2] = {"LTerm", "LFactor", "Term`"};
-    productions[3] = {"RTerm", "RFactor", "Term`"};
-    productions[4] = {"Expr`", "+", "RTerm", "Expr`"};
-    productions[5] = {"Expr`", "-", "RTerm", "Expr`"};
-    productions[6] = {"Expr`", "£"};
-    productions[7] = {"Term`", "*", "RFactor", "Term`"};
-    productions[8] = {"Term`", "/", "RFactor", "Term`"};
-    productions[9] = {"Term`", "^", "RFactor", "Term`"};
-    productions[10] = {"Term`", "£"};
-    productions[11] = {"LFactor", "GFactor"};
-    productions[12] = {"LFactor", "negnum"};
-    productions[13] = {"LFactor", "negname"};
-    productions[14] = {"RFactor", "GFactor"};
-    productions[15] = {"GFactor", "(", "Expr", ")"};
-    productions[16] = {"GFactor", "PosVal"};
-    productions[17] = {"GFactor", "SpaceNegVal"};
-    productions[18] = {"PosVal", "num"};
-    productions[19] = {"PosVal", "name"};
-    productions[20] = {"SpaceNegVal", "spacenegnum"};
-    productions[21] = {"SpaceNegVal", "spacenegname"};
-    
+    // Brad's Useless productions
+    // productions[0] = {"Goal", "Expr"};
+    // productions[1] = {"Expr", "LTerm", "Expr`"};
+    // productions[2] = {"LTerm", "LFactor", "Term`"};
+    // productions[3] = {"RTerm", "RFactor", "Term`"};
+    // productions[4] = {"Expr`", "+", "RTerm", "Expr`"};
+    // productions[5] = {"Expr`", "-", "RTerm", "Expr`"};
+    // productions[6] = {"Expr`", "ϵ"};
+    // productions[7] = {"Term`", "*", "RFactor", "Term`"};
+    // productions[8] = {"Term`", "/", "RFactor", "Term`"};
+    // productions[9] = {"Term`", "^", "RFactor", "Term`"};
+    // productions[10] = {"Term`", "ϵ"};
+    // productions[11] = {"LFactor", "GFactor"};
+    // productions[12] = {"LFactor", "negnum"};
+    // productions[13] = {"LFactor", "negname"};
+    // productions[14] = {"RFactor", "GFactor"};
+    // productions[15] = {"GFactor", "(", "Expr", ")"};
+    // productions[16] = {"GFactor", "PosVal"};
+    // productions[17] = {"GFactor", "SpaceNegVal"};
+    // productions[18] = {"PosVal", "num"};
+    // productions[19] = {"PosVal", "name"};
+    // productions[20] = {"SpaceNegVal", "spacenegnum"};
+    // productions[21] = {"SpaceNegVal", "spacenegname"};
+
+    // Next Productions      Term`", "ϵ
+    productions[0] = {"Goal", "LineFull"};
+    productions[1] = {"LineFull", "VarType", "VarTypeAfter"};
+    productions[2] = {"LineFull", "LineVarName"};
+    productions[3] = {"LineFull", "negdig", "Power'", "MultDiv'", "AddSub'"};
+    productions[4] = {"LineFull", "Parens", "Power'", "MultDiv'", "AddSub'"};
+    productions[5] = {"LineFull", "return", "GTerm"};
+    productions[6] = {"LineFull", "}"};
+    productions[7] = {"VarTypeAfter", "LineVarName"};
+    productions[8] = {"VarTypeAfter", "procedure", "name", "ProcedureParams", "{"};
+    productions[9] = {"LineVarName", "name", "LineVarNameRemaining"};
+    productions[10] = {"LineVarNameRemaining", "=", "Expr"};
+    productions[11] = {"LineVarNameRemaining", "PowerAndRightOp", "MultDiv'", "AddSub'"};
+    productions[12] = {"LineVarNameRemaining", "MultAndRightOp", "AddSub'"};
+    productions[13] = {"LineVarNameRemaining", "DivAndRightOp", "AddSub'"};
+    productions[14] = {"LineVarNameRemaining", "AddSub'"};
+    productions[15] = {"ProcedureParams", "(", "Params", ")"};
+    productions[16] = {"Params", "VarType", "name", "MoreParams"};
+    productions[17] = {"Params", "ϵ"};
+    productions[18] = {"MoreParams", ",", "VarType", "name", "MoreParams"};
+    productions[19] = {"MoreParams", "ϵ"};
+    productions[20] = {"VarType", "num"};
+    productions[21] = {"VarType", "ish"};
+    productions[22] = {"Expr", "LTermAddSub", "AddSub'"};
+    productions[23] = {"LTermAddSub", "LTermMultDiv", "MultDiv'"};
+    productions[24] = {"LTermMultDiv", "LTermPower", "Power'"};
+    productions[25] = {"RTermAddSub", "RTermMultDiv", "MultDiv'"};
+    productions[26] = {"RTermMultDiv", "RTermPower", "Power'"};
+    productions[27] = {"AddSub'", "+", "RTermAddSub", "AddSub'"};
+    productions[28] = {"AddSub'", "-", "RTermAddSub", "AddSub'"};
+    productions[29] = {"AddSub'", "ϵ"};
+    productions[30] = {"MultDiv'", "MultAndRightOp"};
+    productions[31] = {"MultDiv'", "DivAndRightOp"};
+    productions[32] = {"MultDiv'", "ϵ"};
+    productions[33] = {"MultAndRightOp", "*", "RTermMultDiv", "MultDiv'"};
+    productions[34] = {"DivAndRightOp", "/", "RTermMultDiv", "MultDiv'"};
+    productions[35] = {"Power'", "PowerAndRightOp"};
+    productions[36] = {"Power'", "ϵ"};
+    productions[37] = {"PowerAndRightOp", "^", "RTermPower", "Power'"};
+    productions[38] = {"LTermPower", "GTerm"};
+    productions[39] = {"LTermPower", "negdig"};
+    productions[40] = {"LTermPower", "negname"};
+    productions[41] = {"RTermPower", "GTerm"};
+    productions[42] = {"GTerm", "Parens"};
+    productions[43] = {"GTerm", "PosVal"};
+    productions[44] = {"GTerm", "SpaceNegVal"};
+    productions[45] = {"Parens", "(", "Expr", ")"};
+    productions[46] = {"PosVal", "dig"};
+    productions[47] = {"PosVal", "name"};
+    productions[48] = {"SpaceNegVal", "spacenegdig"};
+    productions[49] = {"SpaceNegVal", "spacenegname"};
 
     return productions;
 }
@@ -72,7 +125,9 @@ void createProductionTbl()
 
     //return prodTbl;
 }
-void createProductionTbl(map<int, vector<string>> myProds)
+
+// map<vector<string>, int> createProductionTbl(map<int, vector<string>> myProds)
+string createProductionTbl(map<int, vector<string>> myProds)
 {
     
     vector<string> B;
@@ -82,10 +137,11 @@ void createProductionTbl(map<int, vector<string>> myProds)
     string elem;
     int colms;
     int rows;
+    string output;
 
     for (auto &it : myProds)
     {
-        if (nonTerms.find(it.second[0]) == nonTerms.end())
+        if (find(nonTerms.begin(), nonTerms.end(), it.second[0]) == nonTerms.end())
         {
             nonTerms.insert(nonTerms.end(), it.second[0]);
             firstElem.insert(firstElem.end(), {it.second[0], {}});
@@ -96,20 +152,25 @@ void createProductionTbl(map<int, vector<string>> myProds)
 
     for (auto &it : myProds)
     {
-        if (nonTerms.find(it.second[1]) == nonTerms.end())
+        if (find(nonTerms.begin(), nonTerms.end(), it.second[1]) == nonTerms.end())
         {
             for (auto &t : it.second)
             {
-                if (nonTerms.find(t) == nonTerms.end())
-                terms.insert(terms.end(),{t});
-                firstElem.insert(firstElem.end(), {t, {t}});
+                if (find(nonTerms.begin(), nonTerms.end(), t) == nonTerms.end())
+                {
+                    if (find(terms.begin(), terms.end(), t) == terms.end())
+                    {
+                        terms.insert(terms.end(),t);
+                        firstElem.insert(firstElem.end(), {t, {t}});
+                    }
+                }
             }
         }
     }
     terms.insert(terms.end(), {"eof"});
-    // terms.insert("£");
+    // terms.insert("ϵ");
     firstElem.insert(firstElem.end(), {"eof", {"eof"}});
-    //firstElem.insert("£", {"£"});
+    //firstElem.insert("ϵ", {"ϵ"});
     colms = terms.size();
 
     //gnereate first
@@ -125,13 +186,13 @@ void createProductionTbl(map<int, vector<string>> myProds)
             elem = B[1];
 
             rhs = firstElem[elem];
-            if (rhs.find("£") != rhs.end())
+            if (rhs.find("ϵ") != rhs.end())
             {
-                rhs.erase("£");
+                rhs.erase("ϵ");
             }
             
             int i = 1;
-            while (firstElem[B[i]].find("£") != firstElem[B[i]].end() && i <= k-1)
+            while (firstElem[B[i]].find("ϵ") != firstElem[B[i]].end() && i <= k-1)
             {
                 for (auto &el : firstElem[B[i+1]])
                 {
@@ -143,9 +204,9 @@ void createProductionTbl(map<int, vector<string>> myProds)
                 i++;
             }
 
-            if (i == k && firstElem[B[k]].find("£") != firstElem[B[k]].end())
+            if (i == k && firstElem[B[k]].find("ϵ") != firstElem[B[k]].end())
             {
-                rhs.insert("£");
+                rhs.insert("ϵ");
             }
             for (auto &el : rhs)
             {
@@ -177,7 +238,7 @@ void createProductionTbl(map<int, vector<string>> myProds)
             {
                 elem = B[i];
                 //expr -> term expr`
-                if (nonTerms.find(elem) != nonTerms.end())
+                if (find(nonTerms.begin(), nonTerms.end(), elem) != nonTerms.end())
                 {
                     for (auto &it : rhs)
                     {
@@ -186,7 +247,7 @@ void createProductionTbl(map<int, vector<string>> myProds)
                             followElem[elem].insert(it);
                         }
                     }
-                    if (firstElem[elem].find("£") != firstElem[elem].end())
+                    if (firstElem[elem].find("ϵ") != firstElem[elem].end())
                     {
                         for (auto &it : firstElem[elem])
                         {
@@ -195,7 +256,7 @@ void createProductionTbl(map<int, vector<string>> myProds)
                                 rhs.insert(it);
                             }
                         }
-                        rhs.erase("£");
+                        rhs.erase("ϵ");
                     }
                     else 
                     {
@@ -221,7 +282,7 @@ void createProductionTbl(map<int, vector<string>> myProds)
         AB = make_tuple(A, elem);
 
         rhs = firstElem[elem];
-        if (rhs.find("£") == rhs.end())
+        if (rhs.find("ϵ") == rhs.end())
         {
             firstPlus[AB] = rhs;
         }
@@ -263,14 +324,20 @@ void createProductionTbl(map<int, vector<string>> myProds)
         {
             //string w = el;
             prodTbl.at({A, el}) = it.first;
+            //std::cout << A << ", " << el << ", " << it.first << endl;
         }
     }
+
+    for (auto &pr : prodTbl)
+    {
+        A = pr.first[0];
+        elem = pr.first[1];
+        string val = to_string(pr.second);
+        
+        output += A + "~ " + elem + "~ " + val + "\n";
+    }
     
-    // {
-    //     B = it.first;
-    //     cout << "[" << B[0] << ", " << B[1] << "] -> " << it.second << endl;
-    // }
-    //return pTbl;
+    return output;
 }
 
 int getProduction(string focus, vector<string> word)

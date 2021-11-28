@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -9,8 +10,10 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "parser.cpp"
 #include "productions.cpp"
+#include "IR.cpp"
 
 //#include <string.h>
 
@@ -24,6 +27,7 @@ int main(int argc, char *argv[])
 {
     FILE *fp;
     fstream file;
+    ofstream ptbl ("/home/slamrow/projects/cs6820/compiler3/compilerIR/output/irassignment.txt");
     //regex reg("+|-|*|/|^|");
     char *line = NULL;
     size_t len = 0;
@@ -34,10 +38,11 @@ int main(int argc, char *argv[])
     int pos = 0;
     int prodNum = -1;
     vector<string> wrd;
+    string output;
     
     map<int, vector<string>> prods;
-    map<tuple<string, string>, int> prodsTbl;
-    map<int, vector<string>> stringTokens;
+    map<vector<string>, int> prodsTbl;
+    map<int, vector<string>> tempTokens;
     stack<string> prodStack;
     
     size_t read;
@@ -53,113 +58,134 @@ int main(int argc, char *argv[])
 
     //printf("Welcome to CS6610 MIPS Assembler\n\n");
     // fp = fopen(argv[1], "r");
-    string invalid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1invalid-1.txt"; 
-    string valid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1valid-1.txt";
+    //string invalid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1invalid-1.txt"; 
+    //string valid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1valid-1.txt";
+    string invalid = "/home/slamrow/projects/cs6820/compiler3/compilerIR/input/irassignment.txt"; 
     
-    int i = 0;
-    while(i<2)
+    // int i = 0;
+    // while(i<2)
+    // {
+        //string test = (i==0) ? "LL(1)Valid" : "LL(1)InValid";
+        //fileName = (i == 0) ? valid : invalid;
+
+
+    file.open(invalid, ios::in); 
+
+    //cout << "\033[33mFile : " << test << "\033[0m\n" << endl;        
+
+    // if (fp == 0)
+    // {
+    //     printf("Unable to open file [%s]\n", argv[1]);
+    //     exit(1);
+    // }
+
+
+    prods = createProduction();
+    //prodsTbl = createProductionTbl();
+    output = createProductionTbl(prods);
+    // ptbl.open("/home/slamrow/projects/cs6820/compiler3/compilerIR/output/irassignment.txt", ios::out);
+    // for (auto &el : prodsTbl)
+    // {
+    //     ptbl << el.first[0] << ", " << el.first[1] << ", " << el.second << endl; 
+    // }
+    ptbl << output;
+
+    parser();
+    //unordered_set keys = parser::keysDict; 
+
+    while (getline(file, temp))
     {
-        string test = (i==0) ? "LL(1)Valid" : "LL(1)InValid";
-        fileName = (i == 0) ? valid : invalid;
 
-        file.open(fileName, ios::in); 
-
-        cout << "\033[33mFile : " << test << "\033[0m\n" << endl;        
-
-        if (fp == 0)
+        pos = temp.find("\r");
+        temp = temp.substr(0, pos);
+        cout << left << setw(40) << temp;
+        if (temp.find("//") == 0 || temp == "")
         {
-            printf("Unable to open file [%s]\n", argv[1]);
-            exit(1);
+            cout << endl;
+            continue;
         }
+        getTokens(temp);
 
+        // IR stuff here ???
+        tempTokens = getTokenList();
+                
+        wrd = nextWord();
+        word = wrd[1];
 
-        prods = createProduction();
-        //prodsTbl = createProductionTbl();
-        createProductionTbl(prods);
-        parser();
-
-        while (getline(file, temp))
+        prodStack.push("eof");
+        prodStack.push("Goal");
+        focus = prodStack.top();
+        while(true)
         {
-
-            pos = temp.find("\r");
-            temp = temp.substr(0, pos);
-            cout << temp;
-            getTokens(temp);
-            
-            wrd = nextWord();
-            word = wrd[1];
-
-            prodStack.push("eof");
-            prodStack.push("Goal");
-            focus = prodStack.top();
-            while(true)
+            if (word == " ")
             {
-                if (word == " ")
-                {
-                    //cout << " ";
-                }
-                else if (focus.compare("eof") == 0 && word.compare("eof") == 0)
+                //cout << " ";
+            }
+            else if (focus.compare("eof") == 0 && word.compare("eof") == 0)
+            {
+                prodStack.pop();
+                cout << left << setw(20) << "\tThis is \033[32mvalid\033[0m";
+                // do some IR stuff here???
+                inToPost(temp, tempTokens);
+                break;
+            }
+            else if (findFocus(focus, prods) == -1 || focus == "eof") //focus is terminal or eof
+            {
+                // if (focus.compare(word) == 0 || focus.compare(v[1]) == 0)
+                // {
+                    prodStack.pop();
+                    // cout << word;
+                    wrd = nextWord();
+                    word = wrd[1];
+                // }
+                // else 
+                // {
+                //     cout << "Error looking for symbol at top of stack" << endl;
+                //     break;                    
+                // }
+            }
+            else // focus is non terminal
+            {
+                
+                prodNum = getProduction(focus, wrd);
+                if (prodNum > -1)
                 {
                     prodStack.pop();
-                    cout << "\t\t\tThis is \033[32mvalid\033[0m" << endl;
-                    break;
-                }
-                else if (findFocus(focus, prods) == -1 || focus == "eof") //focus is terminal or eof
-                {
-                    // if (focus.compare(word) == 0 || focus.compare(v[1]) == 0)
-                    // {
-                        prodStack.pop();
-                        // cout << word;
-                        wrd = nextWord();
-                        word = wrd[1];
-                    // }
-                    // else 
-                    // {
-                    //     cout << "Error looking for symbol at top of stack" << endl;
-                    //     break;                    
-                    // }
-                }
-                else // focus is non terminal
-                {
-                    
-                    prodNum = getProduction(focus, wrd);
-                    if (prodNum > -1)
+                    //map<int, vector<string>> prods;
+                    vector<string>::reverse_iterator it = prods[prodNum].rbegin();
+                    for (; it != prods[prodNum].rend() - 1; ++it)
                     {
-                        prodStack.pop();
-                        //map<int, vector<string>> prods;
-                        vector<string>::reverse_iterator it = prods[prodNum].rbegin();
-                        for (; it != prods[prodNum].rend() - 1; ++it)
+                        if (*it != "ϵ")
                         {
-                            if (*it != "£")
-                            {
-                                prodStack.push(*it);
-                            }
+                            prodStack.push(*it);
                         }
                     }
-                    else
-                    {
-                        while (prodStack.empty() == false)
-                        {
-                            prodStack.pop();
-                        }
-                        cout << "\t\t\t\033[31mInvalid\033[0m this is" << endl;
-                        break;
-                    }
                 }
-                if (prodStack.empty())
+                else
                 {
-                    cout << "\t\t\033[31mInvalid!!! \033[0mStack emptied before line finished." << endl;
+                    while (prodStack.empty() == false)
+                    {
+                        prodStack.pop();
+                    }
+                    cout << "\t\033[31mInvalid\033[0m this is" << endl;
                     break;
                 }
-                focus = prodStack.top();
             }
-
+            if (prodStack.empty())
+            {
+                cout << "\t\033[31mInvalid!!! \033[0mStack emptied before line finished." << endl;
+                break;
+            }
+            focus = prodStack.top();
         }
 
-        i++;
-        cout << "\033[33m\n\nNext File" << "\033[0m" << endl;
-        file.close();
+        // Do IR stuff here ???
+
     }
+
+    // i++;
+    // cout << "\033[33m\n\nNext File" << "\033[0m" << endl;
+    // file.close();
     
     return 0;
 }

@@ -42,13 +42,70 @@ map<int, vector<string>> createProduction()
     // productions[21] = {"SpaceNegVal", "spacenegname"};
 
     // Next Productions      Term`", "ϵ
+    // productions[0] = {"Goal", "LineFull"};
+    // productions[1] = {"LineFull", "VarType", "VarTypeAfter"};
+    // productions[2] = {"LineFull", "LineVarName"};
+    // productions[3] = {"LineFull", "negdig", "Power'", "MultDiv'", "AddSub'"};
+    // productions[4] = {"LineFull", "Parens", "Power'", "MultDiv'", "AddSub'"};
+    // productions[5] = {"LineFull", "return", "GTerm"};
+    // productions[6] = {"LineFull", "}"};
+    // productions[7] = {"VarTypeAfter", "LineVarName"};
+    // productions[8] = {"VarTypeAfter", "procedure", "name", "ProcedureParams", "{"};
+    // productions[9] = {"LineVarName", "name", "LineVarNameRemaining"};
+    // productions[10] = {"LineVarNameRemaining", "=", "Expr"};
+    // productions[11] = {"LineVarNameRemaining", "PowerAndRightOp", "MultDiv'", "AddSub'"};
+    // productions[12] = {"LineVarNameRemaining", "MultAndRightOp", "AddSub'"};
+    // productions[13] = {"LineVarNameRemaining", "DivAndRightOp", "AddSub'"};
+    // productions[14] = {"LineVarNameRemaining", "AddSub'"};
+    // productions[15] = {"ProcedureParams", "(", "Params", ")"};
+    // productions[16] = {"Params", "VarType", "name", "MoreParams"};
+    // productions[17] = {"Params", "ϵ"};
+    // productions[18] = {"MoreParams", ",", "VarType", "name", "MoreParams"};
+    // productions[19] = {"MoreParams", "ϵ"};
+    // productions[20] = {"VarType", "num"};
+    // productions[21] = {"VarType", "ish"};
+    // productions[22] = {"Expr", "LTermAddSub", "AddSub'"};
+    // productions[23] = {"LTermAddSub", "LTermMultDiv", "MultDiv'"};
+    // productions[24] = {"LTermMultDiv", "LTermPower", "Power'"};
+    // productions[25] = {"RTermAddSub", "RTermMultDiv", "MultDiv'"};
+    // productions[26] = {"RTermMultDiv", "RTermPower", "Power'"};
+    // productions[27] = {"AddSub'", "+", "RTermAddSub", "AddSub'"};
+    // productions[28] = {"AddSub'", "-", "RTermAddSub", "AddSub'"};
+    // productions[29] = {"AddSub'", "ϵ"};
+    // productions[30] = {"MultDiv'", "MultAndRightOp"};
+    // productions[31] = {"MultDiv'", "DivAndRightOp"};
+    // productions[32] = {"MultDiv'", "ϵ"};
+    // productions[33] = {"MultAndRightOp", "*", "RTermMultDiv", "MultDiv'"};
+    // productions[34] = {"DivAndRightOp", "/", "RTermMultDiv", "MultDiv'"};
+    // productions[35] = {"Power'", "PowerAndRightOp"};
+    // productions[36] = {"Power'", "ϵ"};
+    // productions[37] = {"PowerAndRightOp", "^", "RTermPower", "Power'"};
+    // productions[38] = {"LTermPower", "GTerm"};
+    // productions[39] = {"LTermPower", "negdig"};
+    // productions[40] = {"LTermPower", "negname"};
+    // productions[41] = {"RTermPower", "GTerm"};
+    // productions[42] = {"GTerm", "Parens"};
+    // productions[43] = {"GTerm", "PosVal"};
+    // productions[44] = {"GTerm", "SpaceNegVal"};
+    // productions[45] = {"Parens", "(", "Expr", ")"};
+    // productions[46] = {"PosVal", "dig"};
+    // productions[47] = {"PosVal", "name"};
+    // productions[48] = {"SpaceNegVal", "spacenegdig"};
+    // productions[49] = {"SpaceNegVal", "spacenegname"};
+
     productions[0] = {"Goal", "LineFull"};
     productions[1] = {"LineFull", "VarType", "VarTypeAfter"};
     productions[2] = {"LineFull", "LineVarName"};
     productions[3] = {"LineFull", "negdig", "Power'", "MultDiv'", "AddSub'"};
+    productions[50] = {"LineFull", "dig", "Power'", "MultDiv'", "AddSub'"};
     productions[4] = {"LineFull", "Parens", "Power'", "MultDiv'", "AddSub'"};
     productions[5] = {"LineFull", "return", "GTerm"};
     productions[6] = {"LineFull", "}"};
+    productions[51] = {"LineFull", "printNum", "name"};
+    productions[52] = {"LineFull", "printIsh", "name"};
+    productions[53] = {"LineFull", "readNum", "name"};
+    productions[54] = {"LineFull", "readIsh", "name"};
+    productions[55] = {"LineFull", "printString", "\"any text in here\""};
     productions[7] = {"VarTypeAfter", "LineVarName"};
     productions[8] = {"VarTypeAfter", "procedure", "name", "ProcedureParams", "{"};
     productions[9] = {"LineVarName", "name", "LineVarNameRemaining"};
@@ -87,12 +144,19 @@ map<int, vector<string>> createProduction()
     productions[42] = {"GTerm", "Parens"};
     productions[43] = {"GTerm", "PosVal"};
     productions[44] = {"GTerm", "SpaceNegVal"};
+    productions[56] = {"GTerm", "NameOrProcedure"};
     productions[45] = {"Parens", "(", "Expr", ")"};
+    productions[57] = {"NameOrProcedure", "name", "Arguments"};
+    productions[58] = {"Arguments", "(", "Expr", "MoreArguments"};
+    productions[59] = {"Arguments", "ϵ"};
+    productions[60] = {"MoreArguments", ",", "Expr", "MoreArguments"};
+    productions[61] = {"MoreArguments", "ϵ"};
     productions[46] = {"PosVal", "dig"};
     productions[47] = {"PosVal", "name"};
     productions[48] = {"SpaceNegVal", "spacenegdig"};
     productions[49] = {"SpaceNegVal", "spacenegname"};
-
+    
+    // ", "
     return productions;
 }
 

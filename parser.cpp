@@ -10,11 +10,11 @@
 void parser()
 {
 	//(?!\\s|\\+|-|\\*|\\/|\\^)
-	typeReg = regex("return|num|ish|procedure|if|for|;|[_a-zA-Z][_a-zA-Z0-9]{0,30}*|[0-9]+\\.?[0-9]*|\\s|\\+|\\+\\+|\\+-|\\+=|--|-|\\*|\\/|\\/\\/|\\^|=|==|<=|>=|<|>|\\(|\\)|\\{|\\}|~|!|\\%|&&|\\&\\&|\\|\\||,");
+	typeReg = regex("return|num|ish|procedure|if|for|printNum|printIsh|readNum|readIsh|,|;|[_a-zA-Z][_a-zA-Z0-9]{0,30}*|[0-9]+\\.?[0-9]*|\\s|\\+|\\+\\+|\\+-|\\+=|--|-|\\*|\\/|\\/\\/|\\^|=|==|<=|>=|<|>|\\(|\\)|\\{|\\}|~|!|\\%|&&|\\&\\&|\\|\\||,");
 	//numReg = regex("(?=\\s|\\+|-|\\*|\\/|\\^)?([0-9]+\\.?[0-9]*)(?=\\s|\\+|-|\\*|\\/|\\^)");
 	vector<string> typeArr = {";", "+", "-", "*", "/", " ", "^", "(", ")", "{", "}", "~", "!", "&&", "||", "<", ">", "<=", ">=", "==", "=", ",", "_"};
 	vector<string> typeIlgl = {"+-", "--"};
-	vector<string> typeKeys = {"ish", "return", "num", "procedure", "for", "if"};
+	vector<string> typeKeys = {"ish", "return", "num", "procedure", "for", "printNum", "printIsh", "readNum", "readIsh", "if"};
 	// map<int, Token> tokenList;
 	// std::map<int, Token>::iterator look;
 

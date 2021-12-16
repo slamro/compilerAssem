@@ -26,11 +26,25 @@ typedef struct Intermediate_Representation
     string result;  // processed result
 } intRep;
 
+typedef struct Procedure_IR
+{
+    string proceedType;
+    string proceedName;
+    vector<string> params;
+    
+    stack<string> postStack;    // what will be processed
+    string postFix;
+    string result;  // processed result
+} procRep;
+
 void inToPost(string infix, map<int, vector<string>> tokens);
 // string toPost(string infix, map<int, vector<string>> tokens);
 int preced(char ch);
 string processIR(intRep proc);
 
 map<string, intRep> IRList;
+map<string, intRep> ProcTemp;
 unordered_set<string> mathBits = {"+", "-", "*", "/", "^"};
 int proceed = -1;
+int proceedBody = -1;
+procRep procsTemp;

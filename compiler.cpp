@@ -106,7 +106,6 @@ int main(int argc, char *argv[])
         }
         getTokens(temp);
 
-        // IR stuff here ???
         tempTokens = getTokenList();
                 
         wrd = nextWord();

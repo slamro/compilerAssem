@@ -66,6 +66,12 @@ void inToPost(string infix, map<int, vector<string>> tokens)
                 cout << "This is a procedure. No need to process yet." << endl;
                 return;
             }
+            else if (var.find("print") == 0)
+            {
+                temp.type = "print";
+                prev = "print";
+                temp.proceedType = var;
+            }
             else
             {
                 temp.type = var;
@@ -91,6 +97,12 @@ void inToPost(string infix, map<int, vector<string>> tokens)
         else if (prev == "procedure" && typ == "name")
         {
             temp.proceedName = var;
+        }
+        else if (prev == "print")
+        {
+            temp.name = "print" + var;
+            temp.proceedName = var;
+            temp.result = future;
         }
         else if (var == "=")
         {
@@ -193,6 +205,7 @@ void inToPost(string infix, map<int, vector<string>> tokens)
     temp.postFix = postfix;
     string test = processIR(temp);
     temp.result = test;
+    future = test;
     IRList.insert(IRList.end(), {tempName, temp});
 
     cout << "\tEvaluates to \033[36m" << test << "\033[0m" << endl;
@@ -206,6 +219,10 @@ string processIR(intRep proc)
     if (proc.type == "procedure")
     {
         return "This is a procedure. No need to process yet.\n";
+    }
+    if (proc.type == "print")
+    {
+        return "";
     }
     stack<string> expr = proc.postStack;
     string tempName = proc.name;
@@ -345,4 +362,9 @@ string processIR(intRep proc)
     // proc.result = answer;
 
     return answer;
+}
+
+map<string, intRep> getList()
+{
+    return IRList;
 }

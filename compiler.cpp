@@ -14,12 +14,14 @@
 #include "parser.cpp"
 #include "productions.cpp"
 #include "IR.cpp"
+#include "buildAssem.cpp"
 
 //#include <string.h>
 
 using namespace std;
 
 int findFocus(string s, map<int, vector<string>> table);
+void Assemble(string dir, string fileName);
 // string nextWord(int pos, map<int, vector<string>> tokens);
 
 
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
     fstream file;
     ofstream ptbl ("/home/slamrow/projects/cs6820/compiler3/compilerIR/output/irassignment.txt");
     //regex reg("+|-|*|/|^|");
+    string dir = "/home/slamrow/projects/cs6820/compiler4/compilerIR/assem_output";
     char *line = NULL;
     size_t len = 0;
     string temp;
@@ -46,29 +49,10 @@ int main(int argc, char *argv[])
     stack<string> prodStack;
     
     size_t read;
-    string fileName;
-    //string dir = "/home/slamrow/projects/cs6820/compiler/assem_output/";
-       
-
-    // if (argc != 2)
-    // {
-    //     printf("Error: usage: %s sample_input/<inputBinary.s>\n", argv[0]);
-    //     exit(1);
-    // }
-
-    //printf("Welcome to CS6610 MIPS Assembler\n\n");
-    // fp = fopen(argv[1], "r");
-    //string invalid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1invalid-1.txt"; 
-    //string valid = "/home/slamrow/projects/cs6820/compiler2/compiler/input/ll1valid-1.txt";
-    string invalid = "/home/slamrow/projects/cs6820/compiler3/compilerIR/input/irassignment.txt"; 
+    string fileName = "assembly-1";
     
-    // int i = 0;
-    // while(i<2)
-    // {
-        //string test = (i==0) ? "LL(1)Valid" : "LL(1)InValid";
-        //fileName = (i == 0) ? valid : invalid;
-
-
+    string invalid = "/home/slamrow/projects/cs6820/compiler3/compilerIR/input/assembly-1.txt"; 
+    
     file.open(invalid, ios::in); 
 
     //cout << "\033[33mFile : " << test << "\033[0m\n" << endl;        
@@ -182,9 +166,7 @@ int main(int argc, char *argv[])
 
     }
 
-    // i++;
-    // cout << "\033[33m\n\nNext File" << "\033[0m" << endl;
-    // file.close();
+    Assemble(dir, fileName);
     
     return 0;
 }
@@ -201,5 +183,32 @@ int findFocus(string s, map<int, vector<string>> table)
         
     }
     return ret;
+}
+
+void Assemble(string dir, string fileName)
+{
+     fstream file;
+    string assem;
+    string err;
+    string data;
+    string bss;
+    string assembly;
+    assem = dir + fileName + ".asm";
+    ofstream fa(assem);
+    err = dir + fileName + ".err";
+    ofstream fe(err);
+    fa.close();
+    fe.close();
+    map<string, intRep> AssembleList;
+    AssembleList = getList();
+
+    beginAssembly(fileName);
+    endAssembly(fileName);
+    bodyAssem(AssembleList);
+    assembly = fullAssembly();
+    file.open(assem.c_str(), ios_base::app);
+    file << assembly << endl;
+    file.close();
+
 }
 

@@ -41,10 +41,12 @@ void inToPost(string infix, map<int, vector<string>> tokens);
 // string toPost(string infix, map<int, vector<string>> tokens);
 int preced(char ch);
 string processIR(intRep proc);
+map<string, intRep> getList();
 
 map<string, intRep> IRList;
-map<string, intRep> ProcTemp;
+// map<string, intRep> ProcTemp;
 unordered_set<string> mathBits = {"+", "-", "*", "/", "^"};
 int proceed = -1;
 int proceedBody = -1;
 procRep procsTemp;
+string future;
